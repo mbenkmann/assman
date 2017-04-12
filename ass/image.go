@@ -34,6 +34,7 @@ import "C"
 import (
          "strings"
          "fmt"
+         "html"
          "sort"
          "math"
          "errors"
@@ -143,7 +144,7 @@ func addSVG(pth string, data []byte) {
         if endtagname == "desc" {
           desc := o
           for data[desc-1] != '>' { desc-- }
-          attributes["description"] = string(data[desc:o])
+          attributes["description"] = html.UnescapeString(string(data[desc:o]))
         } else if in_metadata && endtagname == "rect" {
           metadata = append(metadata,attributes)
         }
@@ -182,7 +183,7 @@ func addSVG(pth string, data []byte) {
           continue
         }
       }
-    } else if c == ' ' || c == '\t' || c == '\n' || c == '\r' {
+    } else if !in_metadata && (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
       d := data[in]
       for d == ' ' || d == '\t' || d == '\n' || d == '\r' { // compress sequences of whitespace
         in++
@@ -245,7 +246,7 @@ func addSVG(pth string, data []byte) {
         }
       } else if c == '=' {
         attr := out
-        for data[attr-1] >= 'A' { attr-- }
+        for data[attr-1] >= 'A' || data[attr-1] == '-' { attr-- }
         attrname = string(data[attr:out])
       }
     }
@@ -354,7 +355,12 @@ func addSVGSubAssets(pth string, metadata []map[string]string, a *pile, head, bo
         stack = append(stack, curect)
         curect = rects[foundidx]
         
-        viewBox := fmt.Sprintf("%v %v %v %v", curect.X, curect.Y, curect.W, curect.H)
+        var x,y int32 = 0,0 
+        if len(stack) > 1 {
+          x = curect.X - stack[len(stack)-1].X
+          y = curect.Y - stack[len(stack)-1].Y
+        }
+        viewBox := fmt.Sprintf("%v %v %v %v", x, y, curect.W, curect.H)
         ss := newSVGImageAsset(pth+" => rect "+metadata[foundidx]["id"], viewBox, head, body, metadata[foundidx])
         // At this time we do not support multiple assets with the same id. If a new asset
         // comes in with the same id it will just replace the previously stored one. We test
@@ -436,7 +442,7 @@ func newSVGImageAsset(errorlabel string, vbox string, head, body []byte, metadat
   jsonMeta := map[string]interface{}{}
   err := json.Unmarshal(meta, &jsonMeta)
   if err != nil {
-    ShitLog = append(ShitLog, fmt.Sprintf("%v: JSON conversion error: %v",errorlabel,err))
+    ShitLog = append(ShitLog, fmt.Sprintf("%v: JSON conversion error: %v '%v'",errorlabel,err,string(meta)))
     return nil
   }
   

@@ -35,7 +35,10 @@ func main() {
   assets := ass.List("/")
   sort.Strings(assets)
   for _, a := range assets {
-    fmt.Println("-> "+a)
+    var meta map[string]interface{}
+    err := ass.Meta(a,&meta)
+    if err != nil { panic(err) }
+    fmt.Printf("-> %v (%v)\n",a,meta)
   }
   fmt.Println(strings.Join(ass.ShitLog,"\n"))
 }

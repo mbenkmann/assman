@@ -25,12 +25,24 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.3344383"
-     inkscape:cx="172.12801"
+     inkscape:zoom="4.7701029"
+     inkscape:cx="51.166828"
      inkscape:cy="727.07637"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
-     showgrid="false" />
+     showgrid="false"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-center="true"
+     inkscape:snap-object-midpoints="true" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -39,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -79,7 +91,14 @@
        width="148.21553"
        height="131.93752"
        x="76.249603"
-       y="173.3499" />
+       y="173.3499">
+      <desc
+         id="desc4141">a=99
+foobar=true
+blafasel=[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;]
+goro: onan
+</desc>
+    </rect>
     <rect
        style="opacity:1;fill:#aa4400;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:6.19999981;stroke-dasharray:none;stroke-opacity:1"
        id="mid2"
@@ -93,7 +112,9 @@
        width="14.564531"
        height="22.703535"
        x="208.18712"
-       y="226.03923" />
+       y="226.03923"
+       inkscape:transform-center-x="-7.2822657"
+       inkscape:transform-center-y="-11.351768" />
     <rect
        style="opacity:1;fill:#71c837;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:6.19999981;stroke-dasharray:none;stroke-opacity:1"
        id="in2"
