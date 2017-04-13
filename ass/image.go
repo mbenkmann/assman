@@ -278,7 +278,7 @@ func addSVG(pth string, data []byte) {
     viewBox = fmt.Sprintf("0 0 %v %v",toplevelmeta["width"],toplevelmeta["height"])
   }
   
-  ss := newSVGImageAsset(pth, viewBox, data[0:svgelement], data[svgelement:], map[string]string{})
+  ss := newSVGImageAsset(pth, viewBox, data[0:svgelement], data[svgelement:], map[string]string{"x":"0","y":"0"})
   // At this time we do not support multiple assets with the same id. If a new asset
   // comes in with the same id it will just replace the previously stored one. We test
   // for nil here to make sure we don't replace an existing asset with nil.
@@ -355,12 +355,14 @@ func addSVGSubAssets(pth string, metadata []map[string]string, a *pile, head, bo
         stack = append(stack, curect)
         curect = rects[foundidx]
         
-        var x,y int32 = 0,0 
+        var x,y int = 0,0 
         if len(stack) > 1 {
-          x = curect.X - stack[len(stack)-1].X
-          y = curect.Y - stack[len(stack)-1].Y
+          x = int(curect.X - stack[len(stack)-1].X)
+          y = int(curect.Y - stack[len(stack)-1].Y)
         }
-        viewBox := fmt.Sprintf("%v %v %v %v", x, y, curect.W, curect.H)
+        metadata[foundidx]["x"] = strconv.Itoa(x)
+        metadata[foundidx]["y"] = strconv.Itoa(y)
+        viewBox := fmt.Sprintf("%v %v %v %v", curect.X, curect.Y, curect.W, curect.H)
         ss := newSVGImageAsset(pth+" => rect "+metadata[foundidx]["id"], viewBox, head, body, metadata[foundidx])
         // At this time we do not support multiple assets with the same id. If a new asset
         // comes in with the same id it will just replace the previously stored one. We test
@@ -438,7 +440,7 @@ func newSVGImageAsset(errorlabel string, vbox string, head, body []byte, metadat
   cx := roundint32(width_half+cxf)
   cy := roundint32(height_half-cyf)
   
-  meta := util.AlmostJSON(fmt.Sprintf("%v\nx:%v\ny:%v\nwidth:%v\nheight:%v\ncenterx:%v\ncentery:%v\n",metadata["description"],box.X,box.Y,box.W,box.H,cx,cy))
+  meta := util.AlmostJSON(fmt.Sprintf("%v\nx:%v\ny:%v\nwidth:%v\nheight:%v\ncenterx:%v\ncentery:%v\n",metadata["description"],metadata["x"],metadata["y"],box.W,box.H,cx,cy))
   jsonMeta := map[string]interface{}{}
   err := json.Unmarshal(meta, &jsonMeta)
   if err != nil {
@@ -453,7 +455,7 @@ func (a *SVGAsset) Meta(target interface{}) error {
   return json.Unmarshal(a.MetaJSON, target)
 }
 
-func (a *SVGAsset) Render(width,height int32) ([]uint32,error) {
+func (a *SVGAsset) Render(width,height int) ([]uint32,error) {
   if width <= 0 || height <= 0 { return nil, ErrIllDimensions }
 
   rsvg_handle := C.rsvg_handle_new_with_flags(C.RSVG_HANDLE_FLAG_UNLIMITED|C.RSVG_HANDLE_FLAG_KEEP_IMAGE_DATA)

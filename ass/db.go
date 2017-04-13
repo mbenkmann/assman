@@ -45,7 +45,7 @@ var assets = &pile{sub:map[string]*pile{}}
 type ImageAsset interface{
   Asset
   // Renders the image with the given width*height into an RGBA array.
-  Render(width,height int32) ([]uint32,error)
+  Render(width,height int) ([]uint32,error)
 }
 
 // A rectangular part of an SVG image.
@@ -141,7 +141,10 @@ func Meta(asset_path string, target interface{}) error {
 
 // Renders the image asset with the given asset_path into an RGBA array
 // with the given width*height.
-func Image(asset_path string, width, height int32) ([]uint32, error) {
+// each pixel is a 32-bit quantity, with alpha in the upper 8 bits, then red, then green, then blue.
+// The 32-bit quantities are stored native-endian. Pre-multiplied alpha is used.
+// (That is, 50% transparent red is 0x80800000, not 0x80ff0000.)
+func Image(asset_path string, width, height int) ([]uint32, error) {
   pil := find(asset_path)
   if pil == nil { return nil, os.ErrNotExist }
   var imass ImageAsset
